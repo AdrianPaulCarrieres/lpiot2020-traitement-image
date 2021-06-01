@@ -70,9 +70,9 @@ public class ImageProjet {
 				}
 			}
 			try {
-				HistogramTools.plotHistogram(tabR);
-				HistogramTools.plotHistogram(tabG);
-				HistogramTools.plotHistogram(tabB);
+				HistogramTools.plotHistogramPerso(tabR, "rouge");
+				HistogramTools.plotHistogramPerso(tabG, "vert");
+				HistogramTools.plotHistogramPerso(tabB, "bleu");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
