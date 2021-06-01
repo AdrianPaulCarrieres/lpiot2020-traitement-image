@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 
 public class FileExplorer {
     public static void main(String... args) throws Exception {
-        Path dir = Paths.get(".");
+        Path dir = Paths.get("./images");
         Files.walk(dir).forEach(path -> showFile(path.toFile()));
     }
 
@@ -14,6 +14,8 @@ public class FileExplorer {
             System.out.println("Directory: " + file.getAbsolutePath());
         } else {
             System.out.println("File: " + file.getAbsolutePath());
+
+
         }
     }
 }
