@@ -1,18 +1,26 @@
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+
 
 public class FileExplorer {
     public static void main(String... args) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
-        Path dir = Paths.get("./images");
-        Files.walk(dir) //Récupère tous les dossiers et fichiers sous ./images (un peu comme un ls -R)
-            .map(path -> path.toFile()) //Fais un tableau contenant le retour de la fonction toFile() sur chaque path
-            .filter(file -> !file.isDirectory()) //Filtre en dehors du tableau tous les fichiers étant des répertoire
-            .forEach(file -> map.put(file.getPath(), file.getName()));    //Fais une liste contenant une map (chemin du fichier -> fichier)
+        String[] tab = getToImportFilesPath();
+        for(int i = 0; i < tab.length ; i++){
+            System.out.println(tab[i]);
+        }
+    }
 
-        System.out.println(map.size());
+    public static String[] getToImportFilesPath() throws IOException {
+        Path dir = Paths.get("./images");
+        return Files.walk(dir) // Récupère tous les dossiers et fichiers sous ./images (un peu comme un ls -R)
+                .map(path -> path.toFile()) // Fais un tableau contenant le retour de la fonction toFile() sur chaque
+                                            // path
+                .filter(file -> !file.isDirectory()) // Filtre en dehors du tableau tous les fichiers étant des
+                                                     // répertoire
+                .map(file -> file.toPath().toString()) // Fais un tableau contenant le chemin des fichiers uniquement
+                .toArray(String[]::new); //
+
     }
 }
