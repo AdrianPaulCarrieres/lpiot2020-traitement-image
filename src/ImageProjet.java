@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 import fr.unistra.pelican.Image;
 import fr.unistra.pelican.algorithms.io.ImageLoader;
@@ -25,7 +26,8 @@ public class ImageProjet {
 		return img;
 	}
 
-	public void histogramme(Image img) {
+	public ArrayList<double[]> histogramme(Image img) {
+		ArrayList<double[]> tabHisto = new ArrayList<>();
 		if (img.getBDim() == 1) {
 
 			double[] tab = new double[256];
@@ -39,13 +41,14 @@ public class ImageProjet {
 					tab[niveauGris] = ++tab[niveauGris];
 				}
 			}
-		
+			tabHisto.add(tab);
+		/*
 			try {
 				HistogramTools.plotHistogram(tab);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		} else {
 			double[] tabR = new double[256];
 			double[] tabG = new double[256];
@@ -69,14 +72,18 @@ public class ImageProjet {
 					
 				}
 			}
-			try {
+			tabHisto.add(tabR);
+			tabHisto.add(tabG);
+			tabHisto.add(tabB);
+			/*try {
 				HistogramTools.plotHistogramPerso(tabR, "rouge");
 				HistogramTools.plotHistogramPerso(tabG, "vert");
 				HistogramTools.plotHistogramPerso(tabB, "bleu");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
+		return tabHisto;
 	}
 }
