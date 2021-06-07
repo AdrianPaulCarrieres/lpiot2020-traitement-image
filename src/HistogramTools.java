@@ -77,6 +77,49 @@ public class HistogramTools {
 		if(pathToSave!=null)
 			ChartUtilities.saveChartAsPNG(new File(pathToSave), jfreechart, 900, 600);
 	}
+	
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void plotHistogramPerso(double [] histogram, String couleur) throws IOException{
+
+		XYSeries myseries = new XYSeries("Nombre de pixels");  
+		for(int i=0;i<histogram.length;i++){
+			myseries.add(new Double(i), new Double(histogram[i]));   
+		}
+		XYSeriesCollection myseriescollection = new XYSeriesCollection(myseries);   
 		
+        JFreeChart jfreechart = ChartFactory.createXYBarChart("Histogramme de l'image", "Niveaux de "+couleur, false, "Nombre de pixels", myseriescollection, PlotOrientation.VERTICAL, true, false, false);   
+		jfreechart.setBackgroundPaint(Color.white);   
+		XYPlot xyplot = jfreechart.getXYPlot();   
+	
+		xyplot.setBackgroundPaint(Color.lightGray);
+		/*Color c;
+		switch (couleur) {
+			case "rouge":
+				c = Color.red;
+				break;
+			case "vert":
+				c = Color.green;
+				break;
+			case "bleu":
+				c = Color.blue;
+				break;
+			default: 
+				c = Color.black;
+		}
+		xyplot.setRangeCrosshairPaint(c);*/
+		xyplot.setRangeGridlinePaint(Color.white);   
+		NumberAxis axis = (NumberAxis) xyplot.getDomainAxis();   
+
+		axis.setLowerMargin(0);   
+		axis.setUpperMargin(0);   
+
+		// create and display a frame...
+		ChartFrame frame = new ChartFrame("", jfreechart);
+		frame.pack();
+		frame.setVisible(true);
+	}
 
 }
