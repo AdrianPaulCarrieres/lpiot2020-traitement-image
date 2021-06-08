@@ -41,7 +41,7 @@ public class DAO {
         tx.close();
     }
 
-    public void nettoyerBDD(){
+    public void nettoyerBDD() {
         Transaction tx2 = graphDb.beginTx();
         graphDb.execute("MATCH (n) DETACH DELETE n;");
         tx2.success();
@@ -107,13 +107,15 @@ public class DAO {
         tx.success();
         tx.close();
 
-        LinkedHashMap<String, Float> sortedMap = map.entrySet().stream().sorted((k1, k2) -> k1.getValue().compareTo(k2.getValue()))
+        LinkedHashMap<String, Float> sortedMap = map.entrySet().stream()
+                .sorted((k1, k2) -> k1.getValue().compareTo(k2.getValue()))
+                .filter(entry -> entry.getValue() != 0.0)
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         System.out.println("Les 5 premières");
         Iterator iterator = sortedMap.entrySet().iterator();
         int count = 0;
-        while(iterator.hasNext()){
+        while (iterator.hasNext() && count < 5) {
             System.out.println(iterator.next().toString());
             count++;
         }
