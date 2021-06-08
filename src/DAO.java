@@ -101,7 +101,6 @@ public class DAO {
 
             moyenne = moyenne / 3;
 
-
             map.put(resultat.get("i.chemin").toString(), moyenne);
         });
 
@@ -127,7 +126,7 @@ public class DAO {
         String[] tab = propriete.split(";");
         double[] resultat = new double[tab.length];
         for (int i = 0; i < tab.length; i++) {
-            Double.parseDouble(tab[i]);
+            resultat[i] = Double.parseDouble(tab[i]);
         }
         return resultat;
     }
