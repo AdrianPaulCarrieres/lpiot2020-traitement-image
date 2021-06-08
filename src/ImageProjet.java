@@ -17,7 +17,7 @@ public class ImageProjet {
 		int largeur = img.getXDim();
 		int hauteur = img.getYDim();
 
-		System.out.println("Image chargée. Sa taille est " + largeur + " x " + hauteur + " pixels");
+		System.out.println("Image chargee. Sa taille est " + largeur + " x " + hauteur + " pixels");
 
 		// Afficher une image
 		boolean color = img.getBDim() == 1 ? false : true;
@@ -39,7 +39,7 @@ public class ImageProjet {
 		}
 
 		int couleur;
-		for (int i = 0; i < img.getBDim() && i < 3; ++i) { /* éviter le 4e channel de transparence*/
+		for (int i = 0; i < img.getBDim() && i < 3; ++i) { /* eviter le 4e channel de transparence*/
 			for (int x = 0; x < img.getXDim(); ++x) {
 				for (int y = 0; y < img.getYDim(); ++y) {
 
@@ -62,12 +62,12 @@ public class ImageProjet {
 		return tabHisto;
 	}
 
-	public double[][] histogrammeDiscretisé(double[][] histos) {
-		double[][] histosDiscretisés = new double[3][26];
+	public double[][] histogrammeDiscretise(double[][] histos) {
+		double[][] histosDiscretises = new double[3][26];
 
 		for (int j = 0; j < 3; ++j) {
 			for (int i = 0; i < 26; ++i) {
-				histosDiscretisés[j][i] = 0;
+				histosDiscretises[j][i] = 0;
 			}
 
 		}
@@ -76,51 +76,51 @@ public class ImageProjet {
 			for (int i = 1; i <= 26; ++i) {
 				for (int j = 1; j <= 10; ++j) {
 					if (i * j < 256)
-						histosDiscretisés[k][i - 1] += histos[k][i * j];
+						histosDiscretises[k][i - 1] += histos[k][i * j];
 				}
 			}
 
 		}
 		/*
-		 * try { HistogramTools.plotHistogramPerso(histosDiscretisés[0], "rouge");
-		 * HistogramTools.plotHistogramPerso(histosDiscretisés[1], "vert");
-		 * HistogramTools.plotHistogramPerso(histosDiscretisés[2], "bleu"); } catch
+		 * try { HistogramTools.plotHistogramPerso(histosDiscretises[0], "rouge");
+		 * HistogramTools.plotHistogramPerso(histosDiscretises[1], "vert");
+		 * HistogramTools.plotHistogramPerso(histosDiscretises[2], "bleu"); } catch
 		 * (IOException e) {
 		 * 
 		 * e.printStackTrace(); }
 		 */
-		return histosDiscretisés;
+		return histosDiscretises;
 
 	}
 
-	public double[][] histogrammeNormalisé(double[][] histos, int len) {
+	public double[][] histogrammeNormalise(double[][] histos, int len) {
 		int l = histos[0].length;
 		System.out.println(len);
-		double[][] histosNormalisés = new double[3][l];
+		double[][] histosNormalises = new double[3][l];
 
 		for (int j = 0; j < 3; ++j) {
 			for (int i = 0; i < 26; ++i) {
-				histosNormalisés[j][i] = 0;
+				histosNormalises[j][i] = 0;
 			}
 
 		}
 
 		for (int k = 0; k < 3; ++k) {
 			for (int i = 0; i < 256; ++i) {
-				histosNormalisés[k][i] = histos[k][i] / len;
+				histosNormalises[k][i] = histos[k][i] / len;
 
 			}
 
 		}
 		/*
-		 * try { HistogramTools.plotHistogramPerso(histosNormalisés[0], "rouge");
-		 * HistogramTools.plotHistogramPerso(histosNormalisés[1], "vert");
-		 * HistogramTools.plotHistogramPerso(histosNormalisés[2], "bleu"); } catch
+		 * try { HistogramTools.plotHistogramPerso(histosNormalises[0], "rouge");
+		 * HistogramTools.plotHistogramPerso(histosNormalises[1], "vert");
+		 * HistogramTools.plotHistogramPerso(histosNormalises[2], "bleu"); } catch
 		 * (IOException e) {
 		 * 
 		 * e.printStackTrace(); }
 		 */
-		return histosNormalisés;
+		return histosNormalises;
 
 	}
 
