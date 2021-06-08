@@ -7,7 +7,11 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class DAO {
 
@@ -37,6 +41,13 @@ public class DAO {
         tx.close();
     }
 
+    public void nettoyerBDD(){
+        Transaction tx2 = graphDb.beginTx();
+        graphDb.execute("MATCH (n) DETACH DELETE n;");
+        tx2.success();
+        tx2.close();
+    }
+
     public void ajouterImage(String nomFichier, double[][] histogrammes) {
         Transaction tx = graphDb.beginTx();
 
@@ -48,7 +59,9 @@ public class DAO {
         params.put("bleu", histogrammeToString(histogrammes[2]));
 
         try {
-            graphDb.execute("CREATE (i:Image {chemin: $chemin})-[:A_POUR]->(:RGB {rouge: $rouge, vert: $vert, bleu: $bleu})", params);
+            graphDb.execute(
+                    "CREATE (i:Image {chemin: $chemin})-[:A_POUR]->(:RGB {rouge: $rouge, vert: $vert, bleu: $bleu})",
+                    params);
             tx.success();
         } catch (Exception e) {
             System.out.println("\nL'image existe déjà\n");
@@ -58,34 +71,65 @@ public class DAO {
         }
     }
 
-    private String histogrammeToString(double[] histogramme){
+    private String histogrammeToString(double[] histogramme) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < histogramme.length; i++){
+        for (int i = 0; i < histogramme.length; i++) {
             stringBuilder.append(histogramme[i]);
             stringBuilder.append(";");
         }
         return stringBuilder.toString();
     }
 
-
-    public void getHistogrammes(){
+    public String getImageProche(double[][] histogrammeAComparer) {
         HashMap<String, Float> map = new HashMap<>();
 
         Transaction tx = graphDb.beginTx();
-        Result result = graphDb.execute("MATCH (i: Image)-->(h:RGB) RETURN i.chemin, h LIMIT 5");
+        Result result = graphDb.execute("MATCH (i: Image)-->(h:RGB) RETURN i.chemin, h");
         result.stream().forEach(resultat -> {
-            //System.out.println(resultat.keySet());
-            Node node = (Node) resultat.get("h");
-            System.out.println(node.getProperty("rouge"));
+
             float moyenne = 0;
+
+            Node node = (Node) resultat.get("h");
+            double[] rouge = deProprieteAHistogramme(node.getProperty("rouge").toString());
+            moyenne += ImageProjet.calculerDistance(histogrammeAComparer[0], rouge);
+
+            double[] vert = deProprieteAHistogramme(node.getProperty("vert").toString());
+            moyenne += ImageProjet.calculerDistance(histogrammeAComparer[1], vert);
+
+            double[] bleu = deProprieteAHistogramme(node.getProperty("bleu").toString());
+            moyenne += ImageProjet.calculerDistance(histogrammeAComparer[2], bleu);
+
+            moyenne = moyenne / 3;
+
+
             map.put(resultat.get("i.chemin").toString(), moyenne);
         });
-        result.stream().toArray(Node[]::new);
 
-        
         tx.success();
         tx.close();
+
+        LinkedHashMap<String, Float> sortedMap = map.entrySet().stream().sorted((k1, k2) -> k1.getValue().compareTo(k2.getValue()))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        System.out.println("Les 5 premières");
+        Iterator iterator = sortedMap.entrySet().iterator();
+        int count = 0;
+        while(iterator.hasNext()){
+            System.out.println(iterator.next().toString());
+            count++;
+        }
+        System.out.println("Fin");
+        String first = sortedMap.entrySet().iterator().next().getKey();
+        return first;
     }
 
+    private double[] deProprieteAHistogramme(String propriete) {
+        String[] tab = propriete.split(";");
+        double[] resultat = new double[tab.length];
+        for (int i = 0; i < tab.length; i++) {
+            Double.parseDouble(tab[i]);
+        }
+        return resultat;
+    }
 
 }
