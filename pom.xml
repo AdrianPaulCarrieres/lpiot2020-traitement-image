@@ -18,10 +18,11 @@
 
 
   <dependencies>
+
     <dependency>
-      <groupId>org.neo4j.driver</groupId>
-      <artifactId>neo4j-java-driver</artifactId>
-      <version>4.3.1</version>
+      <groupId>org.neo4j</groupId>
+      <artifactId>neo4j</artifactId>
+      <version>3.4.6</version>
     </dependency>
   </dependencies>
 </project>
