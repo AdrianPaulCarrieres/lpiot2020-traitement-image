@@ -201,4 +201,12 @@ public class ImageProjet {
 		return new_img;
 
 	}
+
+	private void calculerDistance(double[] histogramme_1, double[] histogramme_2) {
+        double resultat = 0;
+        for (int i = 0; i < histogramme_1.length; i++) {
+            resultat += Math.pow(histogramme_2[i] - histogramme_1[i], 2);
+        }
+        Math.sqrt(resultat);
+    }
 }

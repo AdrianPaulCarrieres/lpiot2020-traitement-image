@@ -29,31 +29,15 @@ public class DAO {
         this.graphDbFactory = new GraphDatabaseFactory();
 
         this.graphDb = graphDbFactory.newEmbeddedDatabase(new File("data/images"));
-    }
 
-    private void transaction() {
         Transaction tx = graphDb.beginTx();
-        Node owner = graphDb.createNode(Label.label("Person"));
 
-        owner.setProperty("firstName", "baeldung");
-        owner.setProperty("lastName", "baeldung");
-
-        Node car = graphDb.createNode(Label.label("Car"));
-        car.setProperty("make", "tesla");
-        car.setProperty("model", "model3");
-
-        owner.createRelationshipTo(car, RelationshipType.withName("owner"));
-
-        Result result = graphDb.execute(
-                "MATCH (c:Car) <-[owner]- (p:Person) " + "WHERE c.make = 'tesla'" + "RETURN p.firstName, p.lastName");
-
-        result.stream().forEach(resultat -> System.out.println(resultat));
-
+        graphDb.execute("CREATE CONSTRAINT ON (image:Image) ASSERT image.chemin IS UNIQUE;");
         tx.success();
         tx.close();
     }
 
-    private void ajouterImage(String nomFichier, double[][] histogrammes) {
+    public void ajouterImage(String nomFichier, double[][] histogrammes) {
         Transaction tx = graphDb.beginTx();
 
         Map<String, Object> params = new HashMap<>();
@@ -63,11 +47,15 @@ public class DAO {
         params.put("vert", histogrammeToString(histogrammes[1]));
         params.put("bleu", histogrammeToString(histogrammes[2]));
 
-        graphDb.execute("CREATE (i:Image {chemin: $chemin})-[:A_POUR]->(:RGB {rouge: $rouge, vert: $vert, bleu: $bleu})", params);
-
-        Result result = graphDb.execute("MATCH (i: Image) RETURN i.chemin");
-
-        result.stream().forEach(resultat -> System.out.println(resultat));
+        try {
+            graphDb.execute("CREATE (i:Image {chemin: $chemin})-[:A_POUR]->(:RGB {rouge: $rouge, vert: $vert, bleu: $bleu})", params);
+            tx.success();
+        } catch (Exception e) {
+            System.out.println("\nL'image existe déjà\n");
+            tx.failure();
+        } finally {
+            tx.close();
+        }
     }
 
     private String histogrammeToString(double[] histogramme){
@@ -78,4 +66,26 @@ public class DAO {
         }
         return stringBuilder.toString();
     }
+
+
+    public void getHistogrammes(){
+        HashMap<String, Float> map = new HashMap<>();
+
+        Transaction tx = graphDb.beginTx();
+        Result result = graphDb.execute("MATCH (i: Image)-->(h:RGB) RETURN i.chemin, h LIMIT 5");
+        result.stream().forEach(resultat -> {
+            //System.out.println(resultat.keySet());
+            Node node = (Node) resultat.get("h");
+            System.out.println(node.getProperty("rouge"));
+            float moyenne = 0;
+            map.put(resultat.get("i.chemin").toString(), moyenne);
+        });
+        result.stream().toArray(Node[]::new);
+
+        
+        tx.success();
+        tx.close();
+    }
+
+
 }
