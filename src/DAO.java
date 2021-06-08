@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.ibm.watson.developer_cloud.discovery.v1.model.Filter;
+
 public class DAO {
 
     private static DAO instance;
@@ -111,6 +113,8 @@ public class DAO {
                 .sorted((k1, k2) -> k1.getValue().compareTo(k2.getValue()))
                 .filter(entry -> entry.getValue() != 0.0)
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+
 
         System.out.println("Les 5 premières");
         Iterator iterator = sortedMap.entrySet().iterator();
