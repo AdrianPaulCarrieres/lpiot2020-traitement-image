@@ -115,7 +115,7 @@ public class DAO {
         System.out.println("Les 5 premières");
         Iterator iterator = sortedMap.entrySet().iterator();
         int count = 0;
-        while (iterator.hasNext() && count < 5) {
+        while (iterator.hasNext() && count < 20) {
             System.out.println(iterator.next().toString());
             count++;
         }

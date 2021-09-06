@@ -3,17 +3,17 @@ import fr.unistra.pelican.Image;
 public class App {
     public static void main(String[] args) throws Exception {
         DAO dao = DAO.getInstance();
-        dao.nettoyerBDD();
+        //dao.nettoyerBDD();
         String[] fileNames = FileExplorer.getToImportFilesPath();
 
-        for (String fileName : fileNames) {
-            ImageProjet p = new ImageProjet();
-            Image img = p.lectureImage(fileName);
-            int len = img.getXDim()*img.getYDim();
-            double[][] histogrammes = p.histogrammeNormalise(p.histogramme(img), len);
+        // for (String fileName : fileNames) {
+        //     ImageProjet p = new ImageProjet();
+        //     Image img = p.lectureImage(fileName);
+        //     int len = img.getXDim()*img.getYDim();
+        //     double[][] histogrammes = p.histogrammeNormalise(p.histogramme(img), len);
 
-            dao.ajouterImage(fileName, histogrammes);
-        }
+        //     dao.ajouterImage(fileName, histogrammes);
+        // }
         System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
         ImageProjet p = new ImageProjet();
